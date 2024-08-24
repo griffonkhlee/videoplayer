@@ -1,0 +1,181 @@
+<html><head><base href="https://websim/creative-worlds/video-explorer/"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>精选视频探索</title><style>
+  :root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f39c12;
+    --background-color: #f5f7fa;
+    --text-color: #333;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  main {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 800px;
+    width: 100%;
+  }
+
+  h1 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 2.2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .url-input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .url-input {
+    width: 70%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    transition: border-color 0.3s ease;
+  }
+
+  .url-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+
+  .url-submit {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+  }
+
+  .url-submit:hover {
+    background-color: #3a7bd5;
+  }
+
+  .url-submit:active {
+    transform: scale(0.98);
+  }
+
+  .message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .url-input-container {
+      flex-direction: column;
+    }
+
+    .url-input, .url-submit {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <h1>精选视频探索</h1>
+    <div class="url-input-container">
+      <input type="text" id="videoUrl" class="url-input" placeholder="输入YouTube视频URL">
+      <button id="loadVideo" class="url-submit">加载视频</button>
+    </div>
+    <div class="video-container">
+      <iframe id="videoFrame" width="560" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <p class="message">请输入YouTube视频URL以加载视频</p>
+  </main>
+
+  <script>
+    const videoUrlInput = document.getElementById('videoUrl');
+    const loadVideoButton = document.getElementById('loadVideo');
+    const videoFrame = document.getElementById('videoFrame');
+    const message = document.querySelector('.message');
+
+    loadVideoButton.addEventListener('click', () => {
+      const videoUrl = videoUrlInput.value;
+      if (videoUrl) {
+        const videoId = extractYouTubeId(videoUrl);
+        if (videoId) {
+          videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
+          message.textContent = '视频已加载，享受观看！';
+          message.style.color = '#2ecc71';
+        } else {
+          message.textContent = '请输入有效的YouTube视频URL';
+          message.style.color = '#e74c3c';
+        }
+      } else {
+        message.textContent = '请输入YouTube视频URL';
+        message.style.color = '#e74c3c';
+      }
+    });
+
+    function extractYouTubeId(url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    // 添加键盘事件监听器，使用户可以通过按回车键加载视频
+    videoUrlInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loadVideoButton.click();
+      }
+    });
+
+    // 添加简单的动画效果
+    loadVideoButton.addEventListener('mouseenter', () => {
+      loadVideoButton.style.transform = 'scale(1.05)';
+    });
+
+    loadVideoButton.addEventListener('mouseleave', () => {
+      loadVideoButton.style.transform = 'scale(1)';
+    });
+  </script>
+</body>
+</html>
